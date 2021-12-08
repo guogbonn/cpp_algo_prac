@@ -175,10 +175,108 @@ namespace dec_5_2021{
   }
 };
 
+namespace dec_7_2021{
+  class Node{
+  public:
+    int key;
+    Node * next;
+    Node(int key_, Node * next_){
+      key = key_;
+      next = next_;
+    }
+  };
+
+  void link_out(Node * root){
+    cout << "\n";
+    Node * curr = root;
+    while(curr){
+      cout << curr->key << " ";
+      curr = curr->next;
+    }
+    cout << "\n";
+  }
+
+  Node *  iter_rev(Node * root){
+    Node * curr = root;
+    Node * prev = nullptr;
+    while(curr){
+      Node * next = curr->next;
+      curr->next = prev;
+      prev = curr;
+      curr = next;
+    }
+    link_out(prev);
+    return prev;
+  }
+
+  Node * stack_rev(Node * head, Node * headref){
+    Node * first = head;
+    Node * rest = head->next;
+    if(rest == nullptr){
+      headref = first;
+      return headref;
+    }
+    headref = stack_rev(rest, headref);
+    rest->next = first;
+    first->next = nullptr;
+    return headref;
+  }
+
+  Node * reverse_k(Node * root, int k){
+    if( root == nullptr){
+      return nullptr;
+    }
+    Node * curr = root;
+    Node * prev = nullptr;
+    int count = k;
+    while(curr && count){
+      Node * next = curr->next;
+      curr->next = prev;
+      prev = curr;
+      curr = next;
+      count--;
+    }
+    root->next = reverse_k(curr,k);
+    return prev;
+  }
+
+  bool check_if_pal(Node * curr, Node * * headref ){
+    if(curr == nullptr){
+      return true;
+    }
+    bool prev = check_if_pal(curr->next,headref);
+    if( !prev ){
+      return false;
+    }
+    bool res = curr->key == (*headref)->key;
+    *headref = (*headref)->next;
+    return res;
+
+  }
+
+  void main(){
+    int N = 5;
+    Node * root = nullptr;
+    int arr[] = {1, 3, 5, 3, 1};
+    for(int i = 0; i < N; i++ ){
+      root = new Node(arr[i],root);
+    }
+    link_out( root);
+    root = iter_rev(root);
+    root = stack_rev(root, root);
+    link_out(root);
+    cout << check_if_pal(root,&root);
+    root = reverse_k(root,3);
+    link_out(root);
+
+  }
+
+};
+
 
 int main(int argc, char const *argv[]) {
   /* code */
 
-  dec_5_2021::main();
+  dec_7_2021::main();
   return 0;
 }
