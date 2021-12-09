@@ -273,10 +273,143 @@ namespace dec_7_2021{
 
 };
 
+namespace dec_8_2021{
+
+  void find_pal(string wrd, string * pal_ptr, int low, int high){
+    while(low >= 0  && high < wrd.length() && wrd[low] == wrd[high] ){
+
+      low--;
+      high++;
+
+    }
+    low++;
+    *pal_ptr = wrd.substr(low, high -low);
+
+
+
+  }
+
+  void pal_finder(){
+    string wrd = "AA";
+    string longest_pal = "";
+    for(int i = 0; i < wrd.length(); i++){
+      string pal;
+      find_pal(wrd, &pal, i,i);
+      if( pal.length() > longest_pal.length()){
+        longest_pal = pal;
+      }
+      pal = "";
+
+      find_pal(wrd, &pal, i,i+1);
+      if(pal.length() > longest_pal.length()){
+        longest_pal = pal;
+      }
+      pal = "";
+
+    }
+    cout << longest_pal;
+  }
+
+  void cir_string(){
+    string X = "ABCD";
+    string Y = "DABC";
+    int rot_count = 0;
+    for(int i = 0; i < X.length(); i++){
+      string front = X.substr(0,1);
+      string rest = X.substr(1);
+      rot_count++; // increment rotations
+      X = rest + front;
+      if(Y == X){
+        cout << "both strings match";
+        return;
+      }
+    }
+  }
+
+  void convert_to_exel(){
+    string abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    string result = "";
+    int n= 27;
+
+    while( n > 0){
+      int index = (n-1) % 26;
+      result = char( index + 'A') + result;
+      n = (n-1) /26;
+    }
+    cout << result;
+  }
+
+  void anagram(){
+    string X =  "listen";
+    string Y = "silent";
+    string sort_X;
+    string sort_Y;
+    sort(X.begin(),X.end());
+    sort(Y.begin(),Y.end());
+    if (X ==  Y){
+      cout << "anagram";
+    }
+  }
+
+  void recur_wild(int n, string input){
+
+    if (n == input.length()){
+      cout << input << "\n";
+      return;
+    }
+    if(input[n] == '?'){
+      if (n == 0){
+
+
+        string back = input.substr(1);
+        char front = '1';
+        string temp = front + back;
+        recur_wild(n+1,temp);
+        back = input.substr(1);
+        front = '0';
+        temp = front + back;
+        recur_wild(n+1,temp);
+
+      }else if (n == input.length() -1){
+        string front = input.substr(0,input.length()-1);
+        char back = '1';
+        string temp = front + back;
+        recur_wild(n+1,temp);
+        front = input.substr(0,input.length()-1);
+        back = '0';
+        temp = front + back;
+        recur_wild(n+1,temp);
+      }else{
+        string front = input.substr(0,n);
+        string back = input.substr(n+1);
+        string temp = front + '1' + back;
+        recur_wild(n+1,temp);
+        front = input.substr(0,n);
+        back = input.substr(n+1);
+        temp = front + '0' + back;
+        recur_wild(n+1,temp);
+      }
+
+    }else{
+      recur_wild(n+1,input);
+    }
+  }
+
+  void wildcard(){
+    string input = "1?11?00?1?";
+    recur_wild(0,input);
+  }
+
+  void main(){
+    wildcard();
+  }
+
+};
+
 
 int main(int argc, char const *argv[]) {
   /* code */
 
-  dec_7_2021::main();
+  dec_8_2021::main();
   return 0;
 }
