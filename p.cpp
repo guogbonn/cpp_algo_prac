@@ -493,9 +493,57 @@ namespace dec_9_2021{
 };
 
 
+namespace dec_11_2021 {
+
+  void recur_list(int n, const vector<int> &input,const vector<vector<char>> &input_list, unordered_map<int,char> & discovered, string res, bool start){
+    if (n == input.size()){
+      cout << res <<"\n";
+      return;
+    }
+    if( discovered.find( input[n] - 1) != discovered.end() ){
+      string temp = res + discovered[ input[n] - 1];
+      recur_list(n+1, input, input_list,discovered,temp, false);
+      return;
+    }
+
+    for(int i = 0; i < input_list[ input[n] - 1 ].size(); i++){
+      if(start){
+        discovered.clear();
+      }
+
+      discovered[ input[n] - 1 ] = input_list[ input[n] - 1][i];
+      string temp = res + discovered[ input[n] - 1];
+      recur_list(n+1, input, input_list,discovered,temp, false);
+    }
+
+  }
+
+  void list_poss_comb(){
+    vector< vector<char> > input_list = {
+                                   { 'A', 'B', 'C', 'D' },
+                                   { 'E', 'F', 'G', 'H', 'I', 'J', 'K' },
+                                   { 'L', 'M', 'N', 'O', 'P', 'Q' },
+                                   { 'R', 'S', 'T' },
+                                   { 'U', 'V', 'W', 'X', 'Y', 'Z' }
+                                 };
+    vector<int> input = {1,3,1};
+
+    unordered_map<int,char> discovered;
+
+    string res = "";
+    bool start = true;
+
+    recur_list(0,input, input_list, discovered, res, start);
+  }
+
+  void main(){
+      list_poss_comb();
+  }
+};
+
 int main(int argc, char const *argv[]) {
   /* code */
 
-  dec_9_2021::main();
+  dec_11_2021::main();
   return 0;
 }
