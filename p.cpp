@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <unordered_map>
 #include <string>
+#include <set>
 
 using namespace std;
 
@@ -406,10 +407,95 @@ namespace dec_8_2021{
 
 };
 
+namespace dec_9_2021{
+
+  void recur_interleave(string X, string Y, string res, int ln_c, set<string> & res_set){
+    if(res.length() == ln_c ){
+      cout << res;
+      cout << "\n";
+      res_set.insert(res);
+      return;
+    }
+    if(X.length()){
+      string temp_x = res + X.substr(0,1);
+      recur_interleave(X.substr(1),Y,temp_x,ln_c,res_set);
+    }
+    if(Y.length()){
+      string temp_y = res + Y.substr(0,1);
+      recur_interleave(X,Y.substr(1),temp_y,ln_c,res_set);
+    }
+  }
+
+  void interleave(){
+    string X = "ABC";
+    string Y = "ACB";
+    string res = "";
+    set<string> res_set = {};
+    set<string>::iterator itr;
+    int ln_c = X.length() + Y.length();
+    recur_interleave(X,Y,res,ln_c,res_set);
+    for(itr = res_set.begin(); itr != res_set.end(); itr++){
+      cout << *itr << " ";
+    }
+  }
+
+  void isomorph(){
+    unordered_map<char, char> X_dict;
+    unordered_map<char, char> Y_dict;
+    string X = "ACAB";
+    string Y = "XCXY";
+    for(int i = 0; i < X.length(); i++){
+      //check if curr letter exist in map
+      // chack if curr letter maps to complemnt
+          //else
+          //false
+      if(X_dict.find(X[i]) == X_dict.end()){
+        X_dict[X[i]] = Y[i];
+      }else if(X_dict[X[i]] != Y[i]){
+        cout << "not isomorphic \n";
+        return;
+      }
+
+      if(Y_dict.find(Y[i]) == Y_dict.end()){
+        Y_dict[Y[i]] = X[i];
+      }else if(Y_dict[Y[i]] != X[i]){
+        cout << "not isomorphic \n";
+        return;
+      }
+
+    }
+    cout <<"isomorphic strings";
+  }
+
+  void recur_keypad(int n, vector<int> input, unordered_map<int, string> keypad_dict, string res ){
+    if (n == input.size()){
+      cout << res << "\n";
+      return;
+    }
+    for (int i = 0; i < keypad_dict[input[n]].length(); i++){
+      recur_keypad(n+1,input,keypad_dict,res + keypad_dict[input[n]].substr(i,1));
+    }
+  }
+
+  void keypad(){
+    unordered_map< int, string> keypad_dict;
+    keypad_dict[2] = "ABC";
+    keypad_dict[3] = "DEF";
+    keypad_dict[4] = "GHI";
+    vector<int> input = {2,3,4};
+    string res = "";
+    recur_keypad(0,input,keypad_dict,res);
+  }
+
+  void main(){
+      keypad();
+  }
+};
+
 
 int main(int argc, char const *argv[]) {
   /* code */
 
-  dec_8_2021::main();
+  dec_9_2021::main();
   return 0;
 }
