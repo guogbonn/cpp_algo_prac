@@ -541,9 +541,116 @@ namespace dec_11_2021 {
   }
 };
 
+
+namespace dec_19_2021 {
+
+  class Trie{
+  public:
+    bool is_leaf = false;
+    unordered_map< char, Trie *> children;
+
+    Trie(){
+
+    }
+
+    void insert(string word){
+      Trie * curr = this;
+      for(auto & alpha: word){
+        if(curr->children.find(alpha) == curr->children.end()){
+          curr->children[alpha] = new Trie();
+        }
+        curr = curr->children[alpha];
+      }
+      curr->is_leaf = true;
+    }
+
+    void search(string word){
+      cout << "\n";
+      Trie * curr = this;
+      for(auto & alpha: word){
+        if( curr->children.find(alpha) == curr->children.end()){
+          cout << "word does not exist in trie: " << word;
+          return;
+        }else{
+          curr = curr->children[alpha];
+        }
+      }
+      if(curr->is_leaf){
+        cout << "Found: " << word;
+        return;
+      }
+      cout << "word does not exist in trie: " << word;
+
+    }
+
+  };
+
+  class Trie_{
+  public:
+    vector<Trie_ *> children;
+    string word;
+    bool is_leaf = false;
+    Trie_(){
+      for(int i = 0; i < 27; i++){
+        this->children.push_back(nullptr);
+      }
+    }
+
+    void insert(string word){
+      Trie_ * curr = this;
+      for(auto & alpha: word){
+        int key = (int)alpha - (int)'a';
+        if( curr->children[key] == nullptr ){
+          curr->children[key] = new Trie_();
+        }
+        curr = curr->children[key];
+      }
+      curr->is_leaf = true;
+      curr->word = word;
+    }
+
+    void search(string word){
+      Trie_ * curr = this;
+      for( auto & alpha: word){
+        int key = (int)alpha - (int)'a';
+        if( curr->children[key] == nullptr ){
+          cout << "word not in trie: " << word;
+          return;
+        }
+        curr = curr->children[key];
+      }
+
+      if (curr->is_leaf){
+        cout << "Found: " << curr->word;
+
+      }
+
+    }
+  };
+
+  void main(){
+    Trie_ * head = new Trie_();
+    vector <string> words =   {
+        "lexicographic", "sorting", "of", "a", "set", "of", "keys", "can",
+        "be", "accomplished", "with", "a", "simple", "trie", "based",
+        "algorithm", "we", "insert", "all", "keys", "in", "a", "trie",
+        "output", "all", "keys", "in", "the", "trie", "by", "means", "of",
+        "preorder", "traversal", "which", "results", "in", "output", "that",
+        "is", "in", "lexicographically", "increasing", "order", "preorder",
+        "traversal", "is", "a", "kind", "of", "depth", "first", "traversal"
+    };
+    for (auto & wrd: words){
+      head->insert(wrd);
+    }
+    head->search("kind");
+
+  }
+};
+
+
 int main(int argc, char const *argv[]) {
   /* code */
 
-  dec_11_2021::main();
+  dec_19_2021::main();
   return 0;
 }
