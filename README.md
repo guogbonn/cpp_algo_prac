@@ -28,7 +28,7 @@ br list
 br del #
 br del
 
-p var_name 
+p var_name
 
 
 frame select // shows where you are at
@@ -39,3 +39,9 @@ frame select # for short f 0
 
 watch point set var_name
 w s v
+
+
+
+Networking
+ networksetup -listallhardwareports
+ https://stackoverflow.com/questions/50396973/how-to-pull-the-en0-from-this-networksetup-listallhardwareports
