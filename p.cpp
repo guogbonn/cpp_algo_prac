@@ -622,7 +622,6 @@ namespace dec_19_2021 {
 
       if (curr->is_leaf){
         cout << "Found: " << curr->word;
-
       }
 
     }
