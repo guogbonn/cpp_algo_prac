@@ -646,10 +646,305 @@ namespace dec_19_2021 {
   }
 };
 
+namespace dec_20_2021{
+
+  void find_pair(){
+    vector<int> arr = {1,2,3,4,5,67,5};
+    int target = 6;
+    unordered_map<int,int> sum_dict;
+    for(int i=0; i < arr.size(); i++){
+
+      if( sum_dict.find(target - arr[i]) != sum_dict.end()){
+        cout << "\n";
+        printf(" target - arr[i]: %d, @ %d \n arr[i]: %d @ %d ",target - arr[i],sum_dict[target - arr[i]],arr[i],i);
+
+      }
+      sum_dict[arr[i]] = i;
+    }
+  }
+
+  void check_sub_arr(){
+    vector<int> arr = {  0, 0, 1, 0, 1, 0, 0 };
+    int target = 0;
+    unordered_map<int, int> sum_dict = {{0,-1}};
+    int accum = 0;
+    for(int i = 0; i < arr.size(); i++){
+      accum += (arr[i]) ? arr[i] : -1 ;
+      if(sum_dict.find(accum - target) != sum_dict.end()){
+        int length = i - sum_dict[accum - target];
+        int start = i - length + 1;
+        int end = i;
+        cout << "\n";
+        for(int j = start; j <= end; j++){
+          cout << arr[j] << " ";
+        }
+      }
+      if (sum_dict.find(accum) == sum_dict.end()){
+        sum_dict[accum] = i;
+      }
+    }
+  }
+
+  void swap(int arr[], int x, int y){
+    int temp = arr[x];
+    arr[x] = arr[y];
+    arr[y] = temp;
+  }
+
+  void dutch_flag(){
+    int arr[] = {0,0,0,1,1,2,2,0,0,2,0,1};
+    int length = sizeof(arr)/sizeof(arr[0]);
+    int pivot = 1;
+    int end = length - 1;
+    int m = 0;
+    int start = m;
+    while (m <= end){
+      if(arr[m] < pivot){
+        swap(arr,m,start);
+        m++;
+        start++;
+      }else if (arr[m] > pivot){
+        swap(arr,m,end);
+        end--;
+      }else{
+        m++;
+      }
+    }
+    for(auto &i: arr){
+      cout << i << " ";
+    }
+  }
+
+  void merge_sorted_arr(){
+    int X[] = { 1, 4, 7, 8, 10 };
+    int Y[] = { 2, 3, 9 };
+    int lenx = sizeof(X)/sizeof(X[0]);
+    int leny = sizeof(Y)/sizeof(Y[0]);
+    int val;
+    int j;
+    for(int i = 0; i < lenx; i++){
+
+      if(X[i] > Y[0]){
+        val = X[i];
+        X[i] = Y[0];
+        Y[0] = val;
+        j = 1;
+        while(j < leny && Y[j] < val){
+          Y[j-1] = Y[j];
+          j++;
+        }
+        Y[j-1] = val;
+      }
+    }
+    for(auto & i: X){
+      cout << i << " ";
+    }
+    cout << "\n";
+    for(auto & i: Y){
+      cout << i << " ";
+    }
+  }
+
+  void sort_arrs(int X[], int Y[], int m, int n){
+    int k = n + m + 1;
+    while (n > -1 && m > -1 ){
+      if(X[m] > Y[n]){
+        X[k] = X[m];
+        m--;
+      }else{
+        X[k] = Y[n];
+        n--;
+      }
+      k--;
+    }
+    while ( n > -1){
+      X[k] = Y[n];
+      n--;
+      k--;
+    }
+  }
+
+  void merge_con_arr(){
+    int X[] = { 0, 2, 0, 3, 0, 5, 6, 0, 0 };
+    int Y[] = { 1, 8, 9, 10, 15 };
+    int k = 0;
+    int lenx = sizeof(X)/sizeof(X[0]);
+    int leny = sizeof(Y)/sizeof(Y[0]);
+    for(int i = 0; i < lenx; i++){
+      if (X[i]){
+        X[k] = X[i];
+        k++;
+      }
+    }
+    for(auto & i: X){
+      cout << i << " ";
+    }
+    cout << " \n";
+
+    sort_arrs(X,Y,k-1,leny-1);
+    for(auto & i: X){
+      cout << i << " ";
+    }
+    cout << " \n";
+
+  }
+  void main(){
+      merge_con_arr();
+  }
+}
+
+namespace dec_21_2021{
+  bool is_consec(int arr[], int i , int j, int min_, int max_){
+    if(j-i != max_ - min_){
+
+      return false;
+    }
+    vector<bool> visited(j-i+1,false);
+    for(int k = i; k <= j; k++){
+      if(visited[max_ - arr[k]]){
+
+        return false;
+      }
+      visited[max_ - arr[k]] = true;
+    }
+    return true;
+  }
+
+
+
+  void sub_con_arr(){
+    int arr[] = {2, 0, 2, 1, 4, 3, 1, 0 };
+    int lena = sizeof(arr)/sizeof(arr[0]);
+    int min_;
+    int max_;
+    int largest = 0;
+    int start = 0;
+    int end = 0;
+
+    for(int i = 0; i < lena-1; i++){
+      min_ = arr[i];
+      max_ = arr[i];
+      for(int j = i+1; j < lena-1; j++){
+        min_ = (arr[j] <= min_) ? arr[j] : min_;
+        max_ = (arr[j] >= max_) ? arr[j] : max_;
+        if(is_consec(arr,i,j,min_,max_) && j-i > largest){
+          largest = j-i;
+          start = i;
+          end = j;
+        }
+      }
+    }
+    printf("start: %d, end: %d\n",start, end );
+    for(int i = start; i <= end; i++){
+      printf("%d ",arr[i]);
+    }
+
+  }
+
+  void find_eq(){
+    vector<int> left;
+    int arr[] = {0, -3, 5, -4, -2, 3, 1, 0};
+    int lena = sizeof(arr)/sizeof(arr[0]);
+    int right = 0;
+    for(auto & i: arr){
+      left.push_back(0);
+    }
+    for(int i = 1; i < lena; i++){
+      left[i] = arr[i-1] + left[i-1];
+    }
+    for(int i = lena - 1; i > -1; i--){
+
+      if(left[i] == right){
+        cout << i << " ";
+      }
+      right += arr[i];
+    }
+  }
+
+  void find_max_diff(){
+    int arr[] = {2, 7, 9, 5, 1, 3, 5};
+    int m_diff = 0;
+    int lena  = sizeof(arr)/sizeof(arr[0]);
+    int max = arr[lena-1];
+    for (int i = lena - 2; i > -1; i--){
+      if( arr[i] > max){
+        max = arr[i];
+      }else{
+        m_diff = (max - arr[i] > m_diff) ? max - arr[i] : m_diff;
+      }
+    }
+    cout << m_diff;
+  }
+
+  void kadane(){
+    int arr[] = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
+    int max_ending_here = arr[0];
+    int max_so_far = arr[0];
+    int lena = sizeof(arr)/sizeof(arr[0]);
+    for(int i = 1; i < lena; i++){
+      max_ending_here += arr[i];
+      max_ending_here = (max_ending_here > arr[i]) ? max_ending_here : arr[i];
+      max_so_far = (max_ending_here > max_so_far) ? max_ending_here : max_so_far;
+    }
+    cout << max_so_far;
+  }
+
+  void algokadane(){
+    int arr[] = { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
+    int beg = 0;
+    int start = 0;
+    int end = 0;
+    int max_ending_here = 0;
+    int max_so_far = 0;
+    int lena = sizeof(arr)/sizeof(arr[0]);
+
+    for(int i = 0; i < lena; i++){
+      max_ending_here += arr[i];
+      if (max_ending_here < arr[i]){
+        beg = i;
+        max_ending_here = arr[i];
+      }
+      if(max_ending_here > max_so_far){
+        max_so_far = max_ending_here;
+        start = beg;
+        end = i;
+      }
+    }
+    for(int i = start; i <= end; i++){
+      cout << arr[i] << " ";
+    }
+  }
+
+  void recur_dist_com(int arr[], int n , int k, int size, string res){
+    if (k == 0 ){
+      cout << res << "\n";
+      return;
+    }
+    for(int i = n; i < size; i++ ){
+      string curr_let = to_string(arr[i]);
+      string temp = res + " " + curr_let;
+      recur_dist_com(arr,i, k-1, size, temp);
+    }
+
+  }
+
+  void distinct_com(){
+    int arr[] = {1, 2, 3};
+    int k = 2;
+    int lena = sizeof(arr)/sizeof(arr[0]);
+    string res = "";
+    recur_dist_com(arr, 0, k, lena, res);
+  }
+
+  void main(){
+    distinct_com();
+  }
+};
+
 
 int main(int argc, char const *argv[]) {
   /* code */
 
-  dec_19_2021::main();
+  dec_21_2021::main();
   return 0;
 }
