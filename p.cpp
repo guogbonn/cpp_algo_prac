@@ -942,9 +942,136 @@ namespace dec_21_2021{
 };
 
 
+namespace dec_22_2021{
+  void sequ_ones(){
+    int arr[] = {1, 0,1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0};
+    int left = 0;
+    int left_index = 0;
+    int right_index = 0;
+    int count = 0;
+    int k = 2;
+    int window = 0;
+    int lena = sizeof(arr)/sizeof(arr[0]);
+    for (int i = 0; i < lena; i++){
+      if(arr[i] == 0){
+        count++;
+      }
+      while (count > k){
+        if(arr[left] == 0){
+          count --;
+        }
+        left++;
+
+      }
+      if (i - left > window){
+        left_index = left;
+        right_index = i;
+        window = i - left;
+      }
+    }
+    printf("left_index: %d, right_index: %d , count: %d\n",left_index, right_index,count );
+
+    for(int i = left_index; i <= right_index; i++){
+      cout << arr[i] << " ";
+    }
+
+  }
+
+  void min_sum(){
+    int arr[] = { 10, 4, 2, 5, 6, 3, 8, 1 };
+    int k = 3;
+    int lena = sizeof(arr)/sizeof(arr[0]);
+    int accum = 0;
+    int min_win = 10000;
+    int last = 0;
+    for(int i = 0; i < lena; i++){
+        accum += arr[i];
+        if( i+ 1 > k){
+          if (accum < min_win){
+            min_win = accum;
+            last = i;
+          }
+          accum -= arr[i + 1 - k];
+        }
+    }
+    printf("(%d : %d)",  last - k + 1 ,last);
+  }
+
+  void recur_lar_num(int n , vector<int> input, vector<bool> & discovered, long * res, string temp){
+    if(n == input.size() - 1 ){
+      cout << "try: " << temp  << "\n";
+      long temp_ = stol(temp, nullptr, 10);
+      if(temp_ > *res){
+        *res = temp_;
+      }
+      return;
+    }
+
+    for(int i = 0; i < input.size(); i++){
+
+      if(!discovered[i]){
+        discovered[i] = true;
+        recur_lar_num(i, input, discovered, res,  temp + (string)to_string(input[n]));
+        discovered[i] = false;
+      }
+    }
+
+  }
+
+  void lar_num(){
+    vector<int> input = { 10, 68, 75, 7, 21, 12 };
+    int accum = 0;
+    vector<bool> discovered(input.size(), false);
+    long result;
+    recur_lar_num(0,input,discovered,&result,"");
+    cout << result;
+  }
+
+  void profit_stock(){
+    int arr[] = {1, 5, 2, 3, 7, 6, 4, 5};
+    int lena = sizeof(arr)/sizeof(arr[0]);
+    int j;
+    int profit = 0;
+    for(int i = 1; i < lena; i++){
+      if(arr[i-1] > arr[i]){
+        j = i;
+      }
+      if (arr[i-1] < arr[i] && (i + 1 == lena || arr[i] > arr[i+1]) ){
+        profit += (arr[i] - arr[j]);
+        printf("Buy on day: %d -- Sell on day: %d\n", j+1,i+1);
+      }
+    }
+    cout << profit;
+  }
+
+  void water_trap(){
+    int arr[] = { 7, 0, 4, 2, 5, 0, 6, 4, 0, 5 };
+    int lena = sizeof(arr)/sizeof(arr[0]);
+    int left[lena];
+    left[0] = INT_MIN;
+    int water = 0;
+    for (int i = 1; i < lena - 1; i++ ){
+      left[i] = (left[i-1] > arr[i -1]) ? left[i-1] : arr[i -1];
+    }
+    int right = INT_MIN;
+    for( int i = lena - 2; i > 0; i--){
+      right = (arr[i + 1] > right) ? arr[i + 1] : right;
+      int min_water = (right < left[i]) ? right : left[i];
+      if(min_water > arr[i]){
+          water += min_water - arr[i];
+      }
+    }
+    cout << water;
+  }
+
+  void main(){
+      water_trap();
+  }
+}
+
 int main(int argc, char const *argv[]) {
   /* code */
 
-  dec_21_2021::main();
+  dec_22_2021::main();
   return 0;
 }
