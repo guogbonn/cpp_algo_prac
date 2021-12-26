@@ -1069,9 +1069,207 @@ namespace dec_22_2021{
   }
 }
 
+namespace dec_24_2021{
+  class Node {
+  public:
+    int key;
+    Node * left;
+    Node * right;
+    Node(int key_, Node * left_ = nullptr, Node * right_ = nullptr ){
+      key = key_;
+      left = left_;
+      right = right_;
+    }
+  };
+
+
+  void merge( vector<int> & arr, int low , int m, int high){
+    int n1 = m - low + 1;
+    int n2 = high - m;
+    int L[n1];
+    int M[n2];
+    for(int i = 0; i < n1; i++){
+      L[i] = arr[low + i];
+    }
+    for(int j = 0; j < n2; j++){
+      M[j] =  arr[m + j + 1];
+    }
+    int i, j, k;
+    i =  j = 0;
+    k = low;
+    while (i < n1 && j < n2){
+      if(L[i] < M[j]){
+        arr[k] = L[i];
+        i++;
+      }else{
+        arr[k] = M[j];
+        j++;
+      }
+      k++;
+    }
+    while(i < n1 ){
+      arr[k] = L[i];
+      i++;
+      k++;
+    }
+    while(j < n2){
+      arr[k] = M[j];
+      j++;
+      k++;
+    }
+
+  }
+
+  void mergesort(vector<int> &arr, int low, int high){
+    if(low < high){
+      int m = (int)(low + ((high - low) / 2));
+      mergesort(arr, low, m);
+      mergesort(arr, m+1, high);
+      merge(arr, low, m, high);
+    }
+  }
+
+  void sorted_arr(vector<int> arr){
+    cout << " sorted arr: ";
+    for(auto & i: arr){
+      cout << i << " ";
+    }
+    cout << "\n";
+  }
+
+  Node * create_tree(vector<int> arr, int low, int high){
+    if( low > high){
+      return nullptr;
+    }
+    int m = (int)(low + ((high - low) / 2));
+    Node * root = new Node(arr[m]);
+    root->left = create_tree(arr, low, m-1);
+    root->right = create_tree(arr, m+1, high);
+    return root;
+  }
+
+  void inorder_it(Node * root){
+    vector<Node *> stack;
+    Node * curr = root;
+    cout << " in order: ";
+    while(curr !=nullptr || !stack.empty()){
+      if(curr != nullptr){
+        stack.push_back(curr);
+        curr = curr->left;
+      }else{
+        curr = stack[stack.size()-1];
+        stack.pop_back();
+        cout << curr->key <<" ";
+        curr = curr->right;
+      }
+    }
+    cout << "\n";
+  }
+
+  void pre_order_it(Node * root){
+    vector<Node *> stack;
+    stack.push_back(root);
+    cout << " pre order: ";
+    while(!stack.empty()){
+      Node * curr = stack[stack.size()-1];
+      printf("%d ", curr->key);
+      stack.pop_back();
+      if(curr->right){
+        stack.push_back(curr->right);
+      }
+      if(curr->left){
+        stack.push_back(curr->left);
+      }
+    }
+    cout << "\n ";
+  }
+
+  void postorder(Node * root){
+    vector<Node *> stack;
+    vector<int> stack_out;
+    stack.push_back(root);
+    cout << "postorder: ";
+    while(!stack.empty()){
+      Node * curr = stack[stack.size() - 1];
+      stack_out.push_back(curr->key);
+      stack.pop_back();
+      if(curr->left){
+        stack.push_back(curr->left);
+      }
+      if(curr->right){
+        stack.push_back(curr->right);
+      }
+    }
+    for(int i = stack_out.size()-1; i > -1; i--){
+      cout << stack_out[i] << " ";
+    }
+    cout << "\n";
+  }
+
+  bool traverse(Node * root, int level, int curr_lev, int x, unordered_map<int,vector<int>> & levels_dict, unordered_map<int,vector<int>> &x_dict, unordered_map<string,int> &info){
+    if (root == nullptr){
+      return false;
+    }
+    if(level == 1){
+        cout << root-> key << " ";
+        levels_dict[curr_lev].push_back(root->key);
+
+        x_dict[x].push_back(root->key);
+
+      info["max_lev"] = (info["max_lev"] > curr_lev) ? info["max_lev"] : curr_lev;
+      info["min_lev"] = (info["min_lev"] < curr_lev) ? info["min_lev"] : curr_lev;
+      info["max_x"] = (info["max_x"] > x) ? info["max_x"] : x;
+      info["min_x"] = (info["min_x"] < x) ? info["min_x"] : x;
+      return true;
+    }
+    bool left = traverse(root->left, level - 1, curr_lev, x - 1, levels_dict, x_dict, info);
+    bool right = traverse(root->right, level - 1, curr_lev, x + 1, levels_dict, x_dict, info);
+    return ( left|| right);
+  }
+
+  void views(Node * root){
+    unordered_map<int,vector<int>> levels_dict;
+    unordered_map<int,vector<int>> x_dict;
+    unordered_map<string,int> info;
+    info["max_lev"] = 1;
+    info["min_lev"] = 1;
+    info["max_x"] = 0;
+    info["min_x"] = 0;
+    int level = 1;
+    while(traverse(root, level, level, 0, levels_dict, x_dict, info)){
+      level++;
+    }
+    cout << "\n\n";
+    printf("max_lev: %d, min_lev: %d \n\nmax_x: %d, min_x: %d \n\n",info["max_lev"],info["min_lev"],info["max_x"],info["min_x"]);
+    for(int i = info["min_lev"]; i <= info["max_lev"]; i++){
+      printf("level %d {size: %lu}: ", i,levels_dict[i].size());
+      for(auto & j: levels_dict[i]){
+        printf("%d ",j);
+      }
+      cout << "\n";
+    }
+  }
+
+  void bst_prac(){
+    vector<int> arr = {8,10,-1,3,7,4,2};
+    mergesort(arr,0,arr.size()-1);
+    sorted_arr(arr);
+    Node * root = create_tree(arr, 0, arr.size()-1);
+    inorder_it(root);
+    pre_order_it(root);
+    postorder(root);
+    views(root);
+
+  }
+
+  void main(){
+    bst_prac();
+  }
+}
+
 int main(int argc, char const *argv[]) {
   /* code */
 
-  dec_22_2021::main();
+  dec_24_2021::main();
   return 0;
 }
