@@ -1267,9 +1267,311 @@ namespace dec_24_2021{
   }
 }
 
+namespace dec_26_2021{
+  class Node{
+  public:
+    int key;
+    Node * left;
+    Node * right;
+    Node(int key_ = -1, Node * left_ = nullptr, Node * right_ = nullptr){
+      key = key_;
+      left = left_;
+      right = right_;
+    }
+  };
+
+  void spiral(Node * root){
+    vector<Node *> q;
+    q.push_back(root);
+    int count = 0;
+    bool flag = true;
+    Node * curr = nullptr;
+    while(!q.empty()){
+      count = q.size();
+      if(flag){
+        while (count > 0){
+          curr = q[0];
+          cout << curr->key << " ";
+          q.erase(q.begin());
+          if(curr->left){
+            q.push_back(curr->left);
+          }
+          if(curr->right){
+            q.push_back(curr->right);
+          }
+          count--;
+        }
+      }else{
+        while(count > 0){
+          curr = q[q.size() - 1];
+          cout << curr->key << " ";
+          q.pop_back();
+          if(curr->right){
+            q.insert(q.begin(), curr->right);
+          }
+          if(curr->left){
+            q.insert(q.begin(), curr->left);
+          }
+          count--;
+        }
+      }
+      cout << "\n";
+      flag = !flag;
+    }
+  }
+
+  void is_tree_complete(Node * root){
+    vector<Node *> q;
+    bool flag = false;
+    q.push_back(root);
+    Node * curr;
+    while(!q.empty()){
+      curr = q[0];
+      if(curr->right && curr->left == nullptr){
+        printf("failed on Node: %d - improperly formatted node - not complete", curr->key);
+        return;
+      }
+      if(flag && curr->right == nullptr || curr->left ==  nullptr){
+        printf("failed on Node: %d - node with only one child has appeared before", curr->key);
+        return;
+      }
+      q.erase(q.begin());
+      if(curr->left){
+        q.push_back(curr->left);
+      }else{
+        flag = false;
+      }
+      if(curr->right){
+        q.push_back(curr->right);
+      }else{
+        flag = false;
+      }
+
+    }
+    cout << " is complete";
+  }
+
+  int check_sum(Node * root){
+    if (root == nullptr){
+      return 0;
+    }
+    int left = check_sum(root->left);
+    int right = check_sum(root->right);
+    if(right + left == root->key){
+      return root->key * 2;
+    }
+    return -1000;
+  }
+
+  int get_min(int x, int y){
+    return (x < y) ? x : y;
+  }
+
+  void word_recur(int n, vector<int> input, string res = ""){
+    if (n == input.size()){
+      cout << res << "\n";
+      return;
+    }
+    string alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    int sum = 0;
+    for(int i = n; i < get_min(n+1, input.size() - 1) + 1; i++){
+      sum =( sum * 10) + input[i];
+      if (sum <= 26){
+        string temp = res + alph[sum -1 ];
+        word_recur(i+1, input,temp);
+      }
+    }
+  }
+
+  void word_rep(){
+    vector<int> input = {1,2,2};
+    word_recur(0,input);
+  }
+
+  void is_sub(){
+    string str1 = "lknxcknjhello";
+    string str2 = "hello";
+    int pos = 0;
+    int index_str;
+
+  }
+
+  void create_bst(){
+   Node* root = new Node(15);
+   root->left = new Node(10);
+   root->right = new Node(20);
+   root->left->left = new Node(8);
+   root->left->right = new Node(12);
+   root->right->left = new Node(16);
+   root->right->right = new Node(25);
+   is_sub();
+
+  }
+
+  void main(){
+    create_bst();
+  }
+}
+
+
+namespace jan_6_2022{
+  struct Edge{
+    int src;
+    int dest;
+  };
+  class Graph{
+  public:
+    vector<vector<int>> adjList;
+    Graph(int N, vector<Edge> edges){
+      for(int i = 0; i < N; i++){
+        adjList.push_back(vector<int> {});
+      }
+      for(auto & edge: edges){
+        adjList[edge.src].push_back(edge.dest);
+      }
+    }
+  };
+  void bfs(int src,Graph graph, int N){
+    printf("bfs\n");
+    vector<int> q;
+    q.push_back(src);
+    vector<bool> discovered(N,false);
+    while(!q.empty()){
+      int curr  = q[0];
+      cout << curr << "\n";
+      q.erase(q.begin());
+      for(int i = 0;  i < graph.adjList[curr].size(); i++){
+        if(!discovered[graph.adjList[curr][i]]){
+          q.push_back(graph.adjList[curr][i]);
+          discovered[graph.adjList[curr][i]] = true;
+        }
+      }
+    }
+    printf("\n");
+  }
+
+  bool bipartite(int src, Graph graph, vector<bool>& discovered, vector<bool> &color){
+    discovered[src] = true;
+    for(auto u: graph.adjList[src]){
+
+      if(!discovered[u]){
+        color[u] = !color[src];
+        if(!bipartite(u,graph,discovered,color) ){
+          return false;
+        }
+      }else if(color[src] == color[u]){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  class Node{
+  public:
+    int key;
+    Node * next;
+    Node(int key_, Node * next_ = nullptr){
+      key = key_;
+      next = next_;
+    }
+  };
+
+  void print_out_node_path(Node * root){
+    while (root){
+      cout << root->key << "<- ";
+      root = root->next;
+    }
+  }
+
+  void game_bfs(int src, Graph graph, int N){
+    vector<Node *> q;
+    q.push_back(new Node(src));
+    vector<bool> discovered(N,false);
+    while(!q.empty()){
+      Node * curr = q[0];
+      q.erase(q.begin());
+      if(curr->key == N -1){
+        print_out_node_path(curr);
+        return;
+      }
+      for(auto u: graph.adjList[curr->key]){
+        if(!discovered[u]){
+          discovered[u] = true;
+          q.push_back(new Node(u,curr));
+        }
+      }
+    }
+  }
+
+  void create_game(unordered_map<int,int> snake, unordered_map<int,int> ladder, int N){
+    vector<Edge> edges;
+
+    for(int i = 0; i < N; i++){
+      int j = 1;
+
+      int dest;
+      while ( j <= 6 && j + i <= N){
+        int snake_ = 0;
+        int ladder_ = 0;
+        if(snake.find(i+j) != snake.end()){
+          snake_ = snake[i+j];
+        }
+        if(ladder.find(i+j) != ladder.end()){
+          ladder_ = ladder[i+j];
+        }
+        if(ladder_ + snake_ > 0){
+          dest = ladder_ + snake_;
+        }else{
+          dest = i + j;
+        }
+        Edge temp = {i,dest};
+        edges.push_back(temp );
+        j++;
+      }
+    }
+    Graph g(N+1,edges);
+    game_bfs(0,g,N+1);
+  }
+
+  void snake_ladder(){
+    unordered_map<int,int> snake;
+    unordered_map<int,int> ladder;
+    int N = 100;
+    ladder[1] = 38;
+    ladder[4] = 14;
+    ladder[9] = 31;
+    ladder[21] = 42;
+    ladder[28] = 84;
+    ladder[51] = 67;
+    ladder[72] = 91;
+    ladder[80] = 99;
+
+    // insert snakes into the map
+    snake[17] = 7;
+    snake[54] = 34;
+    snake[62] = 19;
+    snake[64] = 60;
+    snake[87] = 36;
+    snake[93] = 73;
+    snake[95] = 75;
+    snake[98] = 79;
+    create_game(snake,ladder,N);
+  }
+
+  void main(){
+    vector<Edge> edges = {{1,2},{1,3},{3,2},{3,4},{3,1}};
+    int N = 7;
+    vector<bool> discovered(N, false);
+    vector<bool> color(N,false);
+    Graph g(N,edges);
+    // bfs(1, g, N);
+    snake_ladder();
+  }
+}
+
 int main(int argc, char const *argv[]) {
   /* code */
 
-  dec_24_2021::main();
+  jan_6_2022::main();
   return 0;
 }
